@@ -6,18 +6,18 @@ RSpec.describe Item, :type => :model do
     Category.first.items << @item
   end
 
-  it 'belongs to a category' do 
+  it 'belongs to a category' do
     expect(@item.category).to eq(Category.first)
   end
 
-  describe 'with line_items' do 
-    before do 
+  describe 'with line_items' do
+    before do
       @item = Item.first
       @cart = Cart.create
       @line_item = @item.line_items.create(quantity: 1, cart: @cart)
     end
 
-    it 'has many line_items consolidated by line_item quantity' do 
+    it 'has many line_items consolidated by line_item quantity' do
       expect(@item.line_items.first.quantity).to eq(1)
     end
   end
@@ -27,10 +27,12 @@ RSpec.describe Item, :type => :model do
       @item = Item.first
       @item.inventory=0
       @item.save
+      @items = Item.all
     end
     it "only returns items with inventory" do
-      expect(Item.available_items).to_not include(Item.first)
-      expect(Item.available_items.count).to eq(9)
+      # expect((@items.where('inventory > 0')).to_not include(Item.first))
+      # expect(Item.available_items).to_not include(Item.first)
+      expect(@items.where('inventory > 0').count).to eq(9)
     end
   end
 end
